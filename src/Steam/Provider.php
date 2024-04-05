@@ -148,13 +148,27 @@ class Provider extends AbstractProvider
         $params = [
             'openid.ns'         => self::OPENID_NS,
             'openid.mode'       => 'checkid_setup',
-            'openid.return_to'  => $this->redirectUrl,
+            'openid.return_to'  => $this->buildReturnToUrl(),
             'openid.realm'      => sprintf('%s://%s', $this->getScheme(), $realm),
             'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
         ];
 
         return self::OPENID_URL.'?'.http_build_query($params, '', '&');
+    }
+
+    /**
+     * Build the return url.
+     *
+     * @return string
+     */
+    protected function buildReturnToUrl()
+    {
+        if (empty($this->parameters)) {
+            return $this->redirectUrl;
+        }
+
+        return $this->redirectUrl.'?'.http_build_query($this->parameters, '', '&');
     }
 
     /**
